@@ -1,0 +1,14 @@
+{
+  "name": "tend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev-start": "concurrently \"cd server && yarn nodemon server.js\" \"cd client && yarn start\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^6.2.0"
+  }
+}
