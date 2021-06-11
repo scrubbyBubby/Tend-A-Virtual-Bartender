@@ -644,6 +644,13 @@
   outline: none !important;
 }
 
+.border-bottom-top {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  border-left: none;
+  border-right: none;
+}
+
 .no-text-edit {
   cursor: default;
 }

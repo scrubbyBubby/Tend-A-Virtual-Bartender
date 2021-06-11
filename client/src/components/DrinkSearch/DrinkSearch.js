@@ -294,6 +294,27 @@ class DrinkSearch extends Component {
     const dl = drinkLists.getListsFromCache() || [];
     const arr = dl.map(drink => drink.name);
     const listNames = utility.sortArray({ arr, compare: utility.alphabetizationCompare });
+    const noItemsDisplay = <div className="large-list-card no-results-text border-bottom-top">
+      No Lists exist yet
+    </div>;
+
+    const listAdderItems = (listNames.length === 0) ? noItemsDisplay : listNames.map((name, index) => {
+      const className = `list-adder-item flex-center-center list-card medium-text no-side-borders switch-icon-wrapper clickable hover-darken ${(index === 0) ? "with-top":""}`;
+      const onList = (listAdderStates[name]) ? "onList" : "notOnList";
+      return <div className={ className } key={ name } onClick={(e) => {this.handleAddToList(e, name)}}>
+        <div className="flex-center-center">
+          { name }
+        </div>
+        <div className="small-icon absolute-icon-wrapper">
+          <div className="default-icon">
+            { listAdderItemStates[onList].default }
+          </div>
+          <div className="hover-icon">
+            { listAdderItemStates[onList].hover }
+          </div>
+        </div>
+      </div>
+    });
 
     const listAdderItemStates = {
       onList: {
@@ -351,23 +372,7 @@ class DrinkSearch extends Component {
           <div onClick={ this.stopProp } className="card-list wh-600 relative">
             <div onClick={ this.handleListAdderClose } className="absolute-top-right close-button clickable"></div>
             <div className="list-header-card no-borders">Lists Containing {listAdderItem.name}</div>
-            { listNames.map((name, index) => {
-              const className = `list-adder-item flex-center-center list-card medium-text no-side-borders switch-icon-wrapper clickable hover-darken ${(index === 0) ? "with-top":""}`;
-              const onList = (listAdderStates[name]) ? "onList" : "notOnList";
-              return <div className={ className } key={ name } onClick={(e) => {this.handleAddToList(e, name)}}>
-                <div className="flex-center-center">
-                  { name }
-                </div>
-                <div className="small-icon absolute-icon-wrapper">
-                  <div className="default-icon">
-                    { listAdderItemStates[onList].default }
-                  </div>
-                  <div className="hover-icon">
-                    { listAdderItemStates[onList].hover }
-                  </div>
-                </div>
-              </div>
-            }) }
+            { listAdderItems }
             <div className="list-card no-side-borders medium-text clickable flex-center-center">
               <input spellcheck="false" className="no-borders medium-text" onKeyPress={ this.handleNewListKeyPress } onBlur={ this.handleNewListBlur }
                 placeholder="+ New List" />

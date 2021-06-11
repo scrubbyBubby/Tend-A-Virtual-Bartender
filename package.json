@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev-install": "concurrently \"cd server && npm install\" \"cd client && npm install\"",
     "dev-start": "concurrently \"cd server && yarn nodemon server.js\" \"cd client && yarn start\""
   },
   "author": "",
