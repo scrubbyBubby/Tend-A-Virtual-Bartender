@@ -1,0 +1,23 @@
+.liquor-shelf-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    height: calc(100% - 20px);
+}
+
+.liquor-shelf-inner-wrapper {
+    width: 1200px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.liquor-shelf-inner-wrapper > * {
+    flex-grow: 1;
+    flex-basis: 0;
+}

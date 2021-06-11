@@ -1,0 +1,142 @@
+.drink-search-wrapper {
+    position: relative;
+}
+
+.drink-search-wrapper > .autocomplete-wrapper {
+    max-height: calc(calc(100vh - var(--header-height)) - 50px);
+    display: flex;
+    flex-direction: column;
+}
+
+.drink-item {
+    border: 1px solid black;
+    display: grid;
+    grid-template-areas: "name name adder" "image ingredients other" "image glass other";
+    grid-template-rows: auto max-content 1fr;
+    grid-template-columns: 220px 1fr 250px;
+}
+
+.drink-item > .notes-and-score {
+    grid-area: other;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    padding-top: 20px;
+}
+
+.drink-item-list-adder {
+    grid-area: adder;
+    width: 100%;
+    height: 100%;
+    font-size: 32px;
+    font-weight: 600;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+}
+
+.drink-item-list-adder > span {
+    padding: 5px;
+}
+
+.drink-item-list-adder > span:hover {
+    background-color: white;
+}
+
+.notes-and-score > .flex-left-center {
+    gap: 20px;
+}
+
+.notes-icon {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 100%;
+    border: 2px solid rgb(0, 0, 117);
+}
+
+.drink-item-name {
+    padding: 10px 10px 10px 30px;
+    font-size: 32px;
+    font-weight: 700;
+    grid-area: name;
+}
+
+.drink-item-image {
+    padding: 0 20px 10px 20px;
+    grid-area: image;
+    height: 200px;
+    width: 200px;
+}
+
+.drink-item-ingredients {
+    grid-area: ingredients;
+    padding: 5px;
+    font-size: 24px;
+    margin-left: 40px;
+}
+
+.drink-item-glass {
+    grid-area: glass;
+    padding: 5px;
+    font-size: 24px;
+    margin-left: 40px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.drink-item-ingredient-list {
+    margin-left: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.no-results-display {
+    height: 200px;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    color: grey;
+    font-style: italic;
+    font-weight: 600;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 0 0 20px;
+    font-size: 32px;
+    font-weight: 600;
+    gap: 10px;
+    margin-bottom: -10px;
+}
+
+.search-tag {
+    font-size: 32px;
+    padding: 5px 10px;
+}
+
+.search-select {
+    margin-bottom: -2px;
+    font-size: 24px;
+    border: 2px solid black;
+    padding: 10px 15px;
+}
+
+.drink-search-drink-view-wrapper {
+
+}
+
+.list-adder-item {
+    justify-content: space-between;
+    padding: 10px 50px;
+}

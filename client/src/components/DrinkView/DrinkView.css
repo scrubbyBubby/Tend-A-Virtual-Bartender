@@ -1,0 +1,145 @@
+.drink-view {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0px;
+}
+
+.drink-view > div {
+    background-color: white;
+}
+
+.drink-view .header {
+    height: 70px;
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.drink-view .drink-info {
+    flex-grow: 1;
+    display: grid;
+    padding: 50px;
+    grid-template-areas: 
+        "score glass"
+        "score ingredients"
+        "recipe recipe"
+        "notes notes";
+    grid-template-rows: 50px 250px max-content max-content;
+    grid-template-columns: 150px 1fr;
+    padding-top: 20px;
+}
+
+.score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    grid-area: score;
+}
+
+.large-tag {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.glass-wrapper {
+    grid-area: glass;
+}
+
+.glass {
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    margin-left: 50px;
+}
+
+.medium-tag {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.ingredients-wrapper {
+    grid-area: ingredients;
+    margin-left: 50px;
+}
+
+.ingredients {
+    padding-left: 0px;
+}
+
+.drink-view ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    padding-left: 0px;
+}
+
+.drink-view li {
+    list-style-type: disc;
+    padding-left: 10px;
+    font-size: 24px;
+    margin-left: 40px;
+}
+
+.ingredient-list {
+    display: flex;
+    gap: 10px 70px;
+    flex-direction: column;
+    max-height: 200px;
+    flex-wrap: wrap;
+}
+
+.recipe-wrapper {
+    grid-area: recipe;
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+    width: 100%;
+}
+
+.recipe {
+    width: max-content;
+}
+
+.recipe li {
+    list-style-type: decimal;
+    padding-left: 20px;
+    margin-left: 50px;
+    text-indent: -10px;
+}
+
+.notes-wrapper {
+    grid-area: notes;
+    padding: 20px 50px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.notes {
+    width: max-content;
+}
+
+.notes .fancy-text {
+    padding-left: 30px;
+}
+
+.fancy-text {
+    font-style: italic;
+    font-weight: 600;
+}
+
+.medium {
+    font-size: 24px;
+}
