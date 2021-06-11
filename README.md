@@ -2,7 +2,12 @@
 
 ### How to run
 Clone the repo and then navigate a terminal to the main project file and run
+> npm install
+to install top level node_modules, then
+> yarn dev-install
+to install node_modules for server and client sub-folders, then
 > yarn dev-start
+to launch a development server of the site running locally.
 
 ### Overview
 This project is an SPA utilizing the free CocktailDB API to allow users to search for drinks/cocktails, create drink lists, give scores to drinks, and track ingredients/glassware.
