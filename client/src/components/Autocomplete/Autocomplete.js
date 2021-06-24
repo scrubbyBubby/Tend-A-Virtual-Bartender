@@ -193,7 +193,7 @@ class Autocomplete extends Component {
 
     return <div id={ id } className="autocomplete-wrapper">
       <div className="space-left label-text">{ placeholder }</div>
-      <div spellcheck="false" className="autocomplete-input content-editable"
+      <div spellCheck="false" className="autocomplete-input content-editable"
         style={ inputStyling }
         contentEditable
         onInput={ utility.debounce(this.lookupInput) }

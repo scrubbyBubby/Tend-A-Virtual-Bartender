@@ -1,9 +1,6 @@
 import './App.css';
-import React, { useState } from 'react';
-import DrinkView from './components/DrinkView/DrinkView.js';
-import Autocomplete from './components/Autocomplete/Autocomplete.js';
+import React from 'react';
 import DrinkSearch from './components/DrinkSearch/DrinkSearch.js';
-import DrinkList from './components/DrinkList/DrinkList.js';
 import DrinkListManager from './components/DrinkListManager/DrinkListManager.js';
 import LiquorShelfManager from './components/LiquorShelfManager/LiquorShelfManager.js';
 import LoginSignUp from './components/LoginSignUp/LoginSignUp.js';
@@ -11,64 +8,6 @@ import LoginSignUp from './components/LoginSignUp/LoginSignUp.js';
 import cdb from './services/cocktailDBAPI/cocktailDBAPI.js';
 import utility from './services/utility/utility.js';
 import loginLogout from './services/loginLogout/loginLogout.js';
-
-const oldDrinkInfo = {
-  name: "Old Fashioned",
-  score: 80,
-  glass: "Old-fashioned glass",
-  ingredients: [
-    '2oz Bourbon',
-    '2 dashed Angostura Bitters',
-    '1 sugar cube',
-    '1 splash water'
-  ],
-  recipe: [
-    'Place sugar cube in old-fashioned glass and saturate with bitters, add a dash of plain water.',
-    'Muddle until dissolved.',
-    'Fill the glass with ice cubes and add whiskey.',
-    'Garnish with orange twist, and a cocktail cherry.'
-  ],
-  notes: 'Strong and bitter, so use good whiskey. Cane sugar or brown sugar are both great substitutions.'
-}
-
-const autocompleteInfo = {
-  debounce: 500,
-  inputStyling: {
-    fontSize: "32px",
-    padding: "5px 10px",
-    height: "42px",
-    margin: "10px 10px 0 10px"
-  },
-  listStyling: {
-    maxHeight: "400px",
-    overflowY: "auto",
-    border: "1px solid black"
-  },
-  async lookup(data) {
-    const text = data.target.innerText;
-
-    const results = await cdb.constructSearch({
-      type: "cocktail",
-      focus: "byName",
-      text
-    });
-
-    return results;
-  },
-  render(result) {
-    return <div className="basic-item">{ result.name }</div>
-  },
-  async select(result) {
-    const data = await cdb.constructSearch({
-      type: "cocktail",
-      focus: "byId",
-      text: result.id
-    });
-  },
-  backflow(result) {
-    return result.name;
-  }
-}
 
 class App extends React.Component {
   constructor() {
@@ -86,11 +25,21 @@ class App extends React.Component {
     this.handleLiquorShelfClick = this.handleLiquorShelfClick.bind(this);
     this.handleLoginClick = this.handleLoginClick.bind(this);
 
+    this.mounted = false;
+    this.onMountQueue = [];
+    this.assureMount = (func) => {
+      if (this.mounted) {
+        func();
+      } else {
+        this.onMountQueue.push(func);
+      }
+    }
+
     utility.EventEmitter.subscribe("auth-open", ({ state }) => {
-      this.setState({ authOpen: state });
+      this.assureMount(() => this.setState({ authOpen: state }));
     });
     utility.EventEmitter.subscribe("logged-in", ({ state }) => {
-      this.setState({ loggedIn: state})
+      this.assureMount(() => this.setState({ loggedIn: state}));
     })
   }
 
@@ -137,6 +86,13 @@ class App extends React.Component {
     backflow(result) {
       return result.name;
     }
+  }
+
+  componentDidMount() {
+    this.onMountQueue.forEach(func => func());
+    this.mounted = true;
+    this.onMountQueue = [];
+    loginLogout.checkSession({});
   }
 
   changeMode(mode) {

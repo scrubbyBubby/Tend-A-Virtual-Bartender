@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './LoginSignUp.css';
-import axios from "axios";
 
 import utility from '../../services/utility/utility.js';
 import loginLogout from '../../services/loginLogout/loginLogout.js';
@@ -17,8 +16,22 @@ class LoginSignUp extends Component {
       wrongPassword: false
     };
 
+    this.mounted = false;
+    this.onMountQueue = [];
+    this.assureMount = (func) => {
+      if (this.mounted) {
+        func();
+      } else {
+        this.onMountQueue.push(func);
+      }
+    };
+
     utility.EventEmitter.subscribe("logged-in", ({ state }) => {
-      this.setState({ loggedIn: state });
+      this.assureMount(
+        () => {
+          this.setState({ loggedIn: state });
+        }
+      );
     });
 
     this.loggedInAnimationDuration = 100;
@@ -53,6 +66,12 @@ class LoginSignUp extends Component {
     ];
   }
 
+  componentDidMount() {
+    this.onMountQueue.forEach(func => func());
+    this.mounted = true;
+    this.onMountQueue = [];
+  }
+
   componentDidUpdate() {
     const propOpen = this.props.open;
     const stateOpen = this.state.open;
@@ -66,7 +85,6 @@ class LoginSignUp extends Component {
       clearTimeout(this.loggedInAnimation);
       this.loggedInAnimation = undefined;
     }
-
     setTimeout(() => {
       utility.EventEmitter.dispatch("auth-open", { state: false });
     }, this.loggedInAnimationDuration)
@@ -85,6 +103,7 @@ class LoginSignUp extends Component {
   }
 
   handleLoginFormSubmission(e, validators) {
+    console.log(`Beginning login.`);
     e.preventDefault();
     const fail = validators.some((validator) => {
       return validator.some(validation => !validation.result);
@@ -104,7 +123,8 @@ class LoginSignUp extends Component {
           this.setState({ wrongPassword: true });
         }
       };
-  
+      
+      console.log(`About to login`);
       loginLogout.login(userData, onSuccess, onFail);
     }
   };
@@ -145,7 +165,7 @@ class LoginSignUp extends Component {
       <div>
         { validations.map(validation => {
           const validationClass = (validation.result) ? "muted-text green-text bold-text" : "muted-text";
-          return <div className={ validationClass }>
+          return <div className={ validationClass } key={validation.text}>
             { validation.text }
           </div>
         }) }

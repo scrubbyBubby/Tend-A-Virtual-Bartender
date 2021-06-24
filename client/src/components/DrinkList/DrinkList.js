@@ -28,12 +28,24 @@ class DrinkList extends Component {
       }
     }
 
+    this.mounted = false;
+    this.onMountQueue = [];
+    this.assureMount = (func) => {
+      if (this.mounted) {
+        func();
+      } else {
+        this.onMountQueue.push(func);
+      }
+    }
+
     const self = this;
     const drinkList = drinkLists.getList(listName);
-    drinkList.then(data => self.setState({ drinkList: data }));
+    drinkList.then(data => {
+      self.assureMount(() => self.setState({ drinkList: data }));
+    });
     drinkLists.subscribeAll({
       callback({ allLists }) {
-        self.initializeState(self.state.listName);
+        self.assureMount(() => self.initializeState(self.state.listName));
       }
     })
 
@@ -49,6 +61,10 @@ class DrinkList extends Component {
     headerElement.addEventListener("click", (e) => {
       self.setState({ drinkView: false });
     });
+
+    this.onMountQueue.forEach(func => func());
+    this.mounted = true;
+    this.onMountQueue = [];
   }
 
   componentDidUpdate() {
@@ -149,7 +165,7 @@ class DrinkList extends Component {
         </div>
       </div>
 
-    return <div class="drink-list-wrapper">
+    return <div className="drink-list-wrapper">
       <div className="list-header-card full-border">{ listName }</div>
       { listItems }
       { drinkViewElement }

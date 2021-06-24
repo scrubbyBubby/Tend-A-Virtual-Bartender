@@ -35,32 +35,50 @@ class DrinkListManager extends Component {
     this.handleClickSwitchLists = this.handleClickSwitchLists.bind(this);
     this.handleClickListSelectorCover = this.handleClickListSelectorCover.bind(this);
 
+    this.mounted = false;
+    this.onMountQueue = [];
+    this.assureMount = (func) => {
+      if (this.mounted) {
+        func();
+      } else {
+        this.onMountQueue.push(func);
+      }
+    }
+
     const self = this;
     const listNames = drinkLists.getListArray();
     listNames.then(data => {
-      self.setState({ listNames: data });
+      self.assureMount(() => self.setState({ listNames: data }));
     });
 
     drinkLists.subscribeAll({ 
       async callback({ allLists }) {
-        const newState = { listNames: await drinkLists.getListArray() };
-        if (newState.listNames.indexOf(self.state.selectedList) === -1) {
-          newState.selectedList = undefined;
+        const updateState = async () => {
+          const newState = { listNames: await drinkLists.getListArray() };
+          if (newState.listNames.indexOf(self.state.selectedList) === -1) {
+            newState.selectedList = undefined;
+          }
+  
+          self.setState(newState);
         }
 
-        self.setState(newState);
+        self.assureMount(updateState);
       }
     });
 
     utility.EventEmitter.subscribe("new-user-data-loaded", ({ drinkLists }) => {
-      const listNames = drinkLists.map(drinkList => drinkList.name);
-      self.setState({
-        drinkView: false,
-        listNames,
-        removeTargetListName: undefined,
-        listSelectorView: true,
-        selectedList: undefined
-      });
+      const updateListNames = () => {
+        const listNames = drinkLists.map(drinkList => drinkList.name);
+        self.setState({
+          drinkView: false,
+          listNames,
+          removeTargetListName: undefined,
+          listSelectorView: true,
+          selectedList: undefined
+        });
+      };
+
+      self.assureMount(updateListNames);
     });
   }
 
@@ -70,7 +88,11 @@ class DrinkListManager extends Component {
     const headerElement = document.querySelector(".master-header");
     headerElement.addEventListener("click", (e) => {
       self.setState({ drinkView: false });
-    })
+    });
+
+    this.onMountQueue.forEach(func => func());
+    this.mounted = true;
+    this.onMountQueue = [];
   }
 
   constructAutocompleteInfo() {
@@ -266,6 +288,7 @@ class DrinkListManager extends Component {
         const isTarget = (listName === removeTargetListName);
         const removeSetValue = removeSet[(isTarget) ? 'target' : 'notTarget'];
         return <div className="list-card pad-left clickable hover-darken show-on-hover-base"
+          key={ listName }
           onClick={ (e) => { handleClickListName(e, listName) } }>
           <div className="flex-grow">
             { listName }
@@ -294,7 +317,7 @@ class DrinkListManager extends Component {
           </div>
           { listItems }
           <div className="list-card flex-center-center">
-            <input spellcheck="false" className="no-borders medium-text" onKeyPress={ this.handleNewListKeyPress } onBlur={ this.handleNewListBlur }
+            <input spellCheck="false" className="no-borders medium-text" onKeyPress={ this.handleNewListKeyPress } onBlur={ this.handleNewListBlur }
               placeholder="+ New List" />
           </div>
         </div>

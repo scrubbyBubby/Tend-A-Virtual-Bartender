@@ -2,19 +2,20 @@ const { config } = require("dotenv");
 
 const express = require("express");
 const session = require("express-session");
-const MongoStore = require("connect-mongodb-session")(session);
+//const MongoStore = require("connect-mongodb-session")(session);
 const mongoose = require("mongoose");
+const MongoStore = require('connect-mongo');
+const cors = require("cors");
 
 const passport = require("./passport/setup");
 const auth = require("./routes/auth");
 const userRouter = require("./routes/user");
 
 const app = express();
-const PORT = process.env.NODE_ENV === "production" ? (process.env.PORT || 80) : 4000;
-const MONGO_URI = "mongodb+srv://m001-student:m001-mongodb-basics@sandbox.62w38.mongodb.net/tend?retryWrites=true&w=majority";
+const PORT = process.env.NODE_ENV === "production" ? (process.env.PORT || 80) : 5000;
 
 config();
-const { NODE_ENV, DEV_DB } = process.env;
+const { NODE_ENV, DEV_DB } = process.env;   
 
 mongoose
     .connect(DEV_DB, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -25,13 +26,20 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+if (NODE_ENV === "production") {
+    app.use(cors());
+}
+
 // Express Session
 app.use(
     session({
         secret: "very secret this is",
         resave: false,
         saveUninitialized: true,
-        store: new MongoStore({ mongooseConnection: mongoose.connection })
+        store: MongoStore.create({
+            mongoUrl: DEV_DB
+        })
+        //store: new MongoStore({ mongooseConnection: mongoose.connection })
     })
 );
 

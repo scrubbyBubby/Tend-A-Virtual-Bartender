@@ -298,6 +298,17 @@ class DrinkSearch extends Component {
       No Lists exist yet
     </div>;
 
+    const listAdderItemStates = {
+      onList: {
+        default: "\u2713",
+        hover: "\u2713"
+      },
+      notOnList: {
+        default: "",
+        hover: ""
+      }
+    };
+
     const listAdderItems = (listNames.length === 0) ? noItemsDisplay : listNames.map((name, index) => {
       const className = `list-adder-item flex-center-center list-card medium-text no-side-borders switch-icon-wrapper clickable hover-darken ${(index === 0) ? "with-top":""}`;
       const onList = (listAdderStates[name]) ? "onList" : "notOnList";
@@ -315,17 +326,6 @@ class DrinkSearch extends Component {
         </div>
       </div>
     });
-
-    const listAdderItemStates = {
-      onList: {
-        default: "\u2713",
-        hover: "\u2713"
-      },
-      notOnList: {
-        default: "",
-        hover: ""
-      }
-    };
 
     const [ sortAZClassName, sortZAClassName, sortRatingClassName ] =
       ['alphabetical', 'reverse-alphabetical', 'rating' ].map(
@@ -374,7 +374,7 @@ class DrinkSearch extends Component {
             <div className="list-header-card no-borders">Lists Containing {listAdderItem.name}</div>
             { listAdderItems }
             <div className="list-card no-side-borders medium-text clickable flex-center-center">
-              <input spellcheck="false" className="no-borders medium-text" onKeyPress={ this.handleNewListKeyPress } onBlur={ this.handleNewListBlur }
+              <input spellCheck="false" className="no-borders medium-text" onKeyPress={ this.handleNewListKeyPress } onBlur={ this.handleNewListBlur }
                 placeholder="+ New List" />
             </div>
           </div>

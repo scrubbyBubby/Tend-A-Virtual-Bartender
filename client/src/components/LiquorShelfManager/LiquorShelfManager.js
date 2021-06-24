@@ -15,26 +15,46 @@ class LiquorShelfManager extends Component {
       glassRef: []
     };
 
+    this.mounted = false;
+    this.onMountQueue = [];
+    this.assureMount = (func) => {
+      if (this.mounted) {
+        func();
+      } else {
+        this.onMountQueue.push(func);
+      }
+    }
+
     const liquorRefResult = liquorShelf.getLiquorRef();
     const glassRefResult = liquorShelf.getGlassRef();
     const ingredientResult = liquorShelf.getIngredientList();
     const glassResult = liquorShelf.getGlassList();
     Promise.all([liquorRefResult, glassRefResult, ingredientResult, glassResult])
       .then(([liquorRef, glassRef, liquorList, glassList]) => {
-        this.setState({ liquorRef, glassRef, liquorList, glassList });
+        this.assureMount(
+          () => this.setState({ liquorRef, glassRef, liquorList, glassList })
+        );
       })
 
     utility.EventEmitter.subscribe("new-user-data-loaded", ({ liquorShelf: ls }) => {
       const { liquorRef, glassRef } = liquorShelf.parseLiquorShelf(ls);
       ls = liquorShelf.parseLiquorShelf(ls);
-      this.setState({
-        liquorRef,
-        glassRef
-      });
+      this.assureMount(
+        () => this.setState({
+          liquorRef,
+          glassRef
+        })
+      );
     })
 
     this.handleLiquorNameClick = this.handleLiquorNameClick.bind(this);
     this.handleGlassNameClick = this.handleGlassNameClick.bind(this);
+  }
+
+  componentDidMount() {
+    this.onMountQueue.forEach(func => func());
+    this.mounted = true;
+    this.onMountQueue = [];
   }
 
   toggleIngredient(liquorName) {
@@ -96,6 +116,7 @@ class LiquorShelfManager extends Component {
       return (targetName) => {
         const className = `list-card clickable hover-darken ${reference[targetName] ? 'green-tint' : ''}`;
         return <div
+          key={ targetName }
           onClick={ (e) => { onClick(e, targetName) } }
           className={ className }>
           {targetName}

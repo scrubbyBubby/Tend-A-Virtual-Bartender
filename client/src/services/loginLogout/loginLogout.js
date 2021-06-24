@@ -4,6 +4,8 @@ import userScores from '../userScores/userScores.js';
 import drinkLists from '../drinkLists/drinkLists.js';
 import liquorShelf from '../liquorShelf/liquorShelf.js';
 
+const dbBaseURI = "https://fierce-bastion-27540.herokuapp.com";
+
 class loginLogout {
     constructor() {
         this.loggedIn = false;
@@ -26,7 +28,7 @@ class loginLogout {
                 liquorShelf: user.liquorShelf
             });
         } else {
-            axios.post("/update/user", { 
+            axios.post(`${dbBaseURI}/update/user`, { 
                 scores: await userScores.getAllScores(),
                 drinkLists: await drinkLists.getAllLists(),
                 liquorShelf: liquorShelf.assembleLiquorShelf()
@@ -61,7 +63,8 @@ class loginLogout {
     }
 
     async login(data, onSuccess, onFail) {
-        const res = await axios.post("/api/auth/register_login", data);
+        console.log(`Beginning login within service`);
+        const res = await axios.post(`${dbBaseURI}/api/auth/register_login`, data);
         const success = res.status === 200 && res.data.user !== undefined;
         if (success) {
             const { newUser } = res.data;
@@ -69,22 +72,37 @@ class loginLogout {
             const user = res.data.user;
             this.loggedIn = true;
             await this.loadUserData(user, newUser);
-            onSuccess(res);
+            if (onSuccess) onSuccess(res);
         } else {
-            onFail(res);
+            if (onFail) onFail(res);
+        }
+    }
+
+    async checkSession(data, onSuccess, onFail) {
+        const res = await axios.post(`${dbBaseURI}/api/auth/checksession`, data);
+        const success = res.status === 200 && res.data.user !== undefined;
+        if (success) {
+            const { newUser } = res.data;
+            utility.EventEmitter.dispatch("logged-in", { state: true, newUser });
+            const user = res.data.user;
+            this.loggedIn = true;
+            await this.loadUserData(user, newUser);
+            if (onSuccess) onSuccess(res);
+        } else {
+            if (onFail) onFail(res);
         }
     }
 
     async logout(data, onSuccess, onFail) {
         this.loggedIn = false;
         utility.EventEmitter.dispatch("logged-in", { state: false });
-        const res = await axios.post("/api/auth/logout", data);
+        const res = await axios.post(`${dbBaseURI}/api/auth/logout`, data);
         const success = res.status === 200;
         if (success) {
             await this.unloadUserData();
-            onSuccess(res);
+            if (onSuccess) onSuccess(res);
         } else {
-            onFail(res);
+            if (onFail) onFail(res);
         }
     }
 }

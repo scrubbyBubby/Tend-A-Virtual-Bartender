@@ -45,6 +45,23 @@ router.post("/register_login",
     }
 );
 
+router.post("/checksession", (req, res, next) => {
+    passport.authenticate("local", function(err, user, info) {
+        if (err) {
+            return res.status(400).json({ errors: err });
+        }
+        if (!user) {
+            return res.status(200).json({ message: info.message });
+        }
+        req.logIn(user, function(err) {
+            if (err) {
+                return res.status(400).json({ errors: err });
+            }
+            return res.status(200).json({ user: req.user, newUser: info.newUser });
+        });
+    })(req, res, next);
+})
+
 router.post("/logout", (req, res, next) => {
     if (req.session) {
         req.logout();
