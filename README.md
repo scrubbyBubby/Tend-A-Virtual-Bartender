@@ -1,5 +1,9 @@
 # Tend - A Virtual Bartender
 
+Checkout the front end in action here: https://main.d1yfpycdii7xyx.amplifyapp.com/
+Backend support through Heroku is to come soon, but you're currently able to search drinks through the CocktailDB provided database, as well as give drinks ratings, save them to your drink lists, and track what ingredients you currently have.
+For more advanced features, at the moment you will need to follow the cloning and launching instructions below.
+
 ### How to run
 Clone the repo and then navigate a terminal to the main project file and run
 > npm install
